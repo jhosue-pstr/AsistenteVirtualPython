@@ -1,6 +1,7 @@
 import speech_recognition as sr
-import pyttsx3
-import pywhatkit
+import pyttsx3 , pywhatkit , wikipedia , datetime,keyboard
+from pygame import mixer
+
 
 name = "Alexa"
 listener = sr.Recognizer()
@@ -18,7 +19,6 @@ def listen():
         print("Escuchando...")
         listener.adjust_for_ambient_noise(source)
         pc = listener.listen(source)
-
     try:
         rec = listener.recognize_google(pc, language="es")
         rec = rec.lower()
@@ -42,5 +42,28 @@ def run_Alexa():
                 print("Reproduciendo " + music)
                 talk("Reproduciendo " + music)
                 pywhatkit.playonyt(music)
+                search = rec.replace("busca","")
+                wikipedia.set_lang("es")
+                wiki = wikipedia.summary(search, 1)
+                print(search + ": "+wiki)
+                talk(wiki)
+            elif "alarma" in rec:
+                num = rec.replace("alarma ","")
+                num = num.strip()
+                talk ("alarma "+ num )
+                while True:
+                    if datetime.datetime.now().strftime("%H:%M") == num:
+                        print("HORA DE DESPERTAR")
+                        while True:
+                            mixer.init()
+                            mixer.music.load("alarma.mp3")
+                            mixer.music.play()
+                            while mixer.music.get_busy():
+                                if keyboard.read_key() in ["s", "S"]:
+                                    mixer.music.stop()           
+                                    break
+                            break
+                        break
+ 
 if __name__ == "__main__":  
     run_Alexa()
