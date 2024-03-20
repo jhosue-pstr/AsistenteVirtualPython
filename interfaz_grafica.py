@@ -8,7 +8,35 @@ from pygame import mixer
 from colores import capture 
 import subprocess as sub
 import os
+from tkinter import *
+from PIL import Image,ImageTk
 
+main_window = Tk()
+main_window.title("Asistente Virtual")
+
+main_window.geometry("800x600")
+main_window.config(background="purple")
+
+Label_title = Label(main_window,text="asistente virtual",background="violet",fg="black" , font=('Arial', 25,"bold"))
+Label_title.pack(pady=10)
+
+axela_photo = ImageTk.PhotoImage(Image.open("imagen1.jpg"))
+window_photo = Label(main_window, image=axela_photo)
+window_photo.pack(pady=5)
+
+def mexican_voice():
+    change_voice(3)
+
+def spanish_voice():
+    change_voice(0)
+
+def english_voice():
+    change_voice(1)
+
+
+def change_voice(id):
+    engine.setProperty("voice", voices[id].id)
+    
 
 
 name = "Alexa"
@@ -19,17 +47,19 @@ voices = engine.getProperty("voices")
 engine.setProperty("voices", voices[0].id)
 
 
-
 sites = {"opera":"opera.com",
          "youtube":"youtube.com",
          "facebook":"facebook.com",
-         "whatsapp":"whatsapp.com",
+         "whatsapp":"https://web.whatsapp.com",
          "universidad":"https://lamb-academic.upeu.edu.pe/student-portal/pages/student-courses-v2"
          }
+
 programs = {
     "steam":r"C:\Program Files (x86)\Steam\steam.exe",
     "spotify":r"C:\Program Files\WindowsApps\SpotifyAB.SpotifyMusic_1.232.997.0_x64__zpdnekdrzrea0\Spotify.exe",
-    "word":r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE"
+    "word":r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE",
+    "discord":r"C:\Users\User\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Discord Inc\Discord.lnk",
+    "visual":r"C:\Users\User\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Visual Studio Code\Visual Studio Code.lnk",
 }
 files = {
 
@@ -135,8 +165,7 @@ def run_Alexa():
                 write(file)
             talk("necesitas algo mas ?")
 
-        else:
-            "termina" in rec
+        elif "termina" in rec:
             talk("apagando sistema")
             break
 
@@ -149,7 +178,14 @@ def write(f):
     talk("listo , ya puedes revisarlo")
     sub.Popen("nota.txt" , shell=True)
 
-    
-                
-if __name__ == "__main__":  
-    run_Alexa()
+
+
+Button_voice_mx = Button(main_window, text="voz Mexico" , fg="WHITE",background="RED",font=("Arial" , 12, "bold"),command=mexican_voice)
+Button_voice_mx.place(x=635,y=80,width=150,height=30)
+Button_voice_es = Button(main_window, text="voz españa" , fg="WHITE",background="blue",font=("Arial" , 12, "bold"),command=spanish_voice)
+Button_voice_es.place(x=635,y=120,width=150,height=30)
+Button_voice_usa = Button(main_window, text="voz usa" , fg="WHITE",background="orange",font=("Arial" , 12, "bold"), command=english_voice)
+Button_voice_usa.place(x=635,y=160,width=150,height=30)
+
+
+main_window.mainloop()
